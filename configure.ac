@@ -7,5 +7,5 @@ AC_PROG_CC
 AC_PROG_LEX
 AC_PROG_YACC
 
-AC_CONFIG_FILES([Makefile vm/Makefile])
+AC_CONFIG_FILES([Makefile as/Makefile vm/Makefile])
 AC_OUTPUT

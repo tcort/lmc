@@ -11,3 +11,10 @@ Makefile
 Makefile.in
 lmvm
 lmvm.o
+lmas
+scanner.c
+scanner.o
+parser.c
+parser.h
+parser.o
+ylwrap

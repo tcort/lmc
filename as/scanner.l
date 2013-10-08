@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "parser.y.tab.h"
+#include "parser.h"
 
 extern int lineno;
 void yyerror(char *);

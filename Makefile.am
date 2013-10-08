@@ -1,1 +1,1 @@
-SUBDIRS = vm
+SUBDIRS = as vm

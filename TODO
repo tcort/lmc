@@ -1,6 +1,5 @@
 Needed for 1.0:
  * Clean up assembler code.
- * auto-tools build system.
  * Write documentation.
  * Add test cases and setup Travis CI.
  * Allow user specified output files for the assembler.
