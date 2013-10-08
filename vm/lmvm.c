@@ -116,7 +116,11 @@ int main(int argc, char *argv[]) {
 				if (inst == INP) {
 					fprintf(stdout, "Please enter a number: ");
 					fflush(stdout);
-					fscanf(stdin, "%d", &acc);
+					rc = fscanf(stdin, "%d", &acc);
+					if (rc == EOF) {
+						fprintf(stderr, "EOF\n");
+						exit(1);
+					}
 				} else if (inst == OUT) {
 					fprintf(stdout, "%d\n", acc);
 				} else {
