@@ -148,7 +148,7 @@ void label_insert(char *_label, int _lineno) {
 
 program : lines
 		{
-			int fd;
+			int fd, rc;
 			struct statement *stmt, *next_stmt;
 
 			fd = creat("a.out", S_IRWXU);
@@ -171,7 +171,11 @@ program : lines
 					stmt->inst += label->lineno;
 				}
 
-				write(fd, &stmt->inst, 4);
+				rc = write(fd, &stmt->inst, 4);
+				if (rc == -1) {
+					fprintf(stderr, "write(): %s\n", strerror(errno));
+					exit(1);
+				}
 
 				if (stmt->label) free(stmt->label);
 				next_stmt = stmt->next;
