@@ -10,6 +10,11 @@ if test "x${DIFF}" = "x"; then
 	exit 77
 fi
 
+# Create an empty EXP file if there is no expected output.
+if [ ! -f ${EXP} ]; then
+	touch ${EXP}
+fi
+
 ${LMAS} -o ${BIN} ${ASM}
 ${LMVM} ${BIN} > ${OUT}
 
