@@ -18,3 +18,10 @@ parser.c
 parser.h
 parser.o
 ylwrap
+test-driver
+*.log
+*.trs
+*.bin
+*.out
+*.swp
+lmc-*.tar.gz

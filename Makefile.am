@@ -1,2 +1,2 @@
 EXTRA_DIST = README.md
-SUBDIRS = as vm
+SUBDIRS = as vm tests

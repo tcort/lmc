@@ -8,8 +8,7 @@ This repository contains an implementation of a virtual LMC as well as an
 assembler to compile simple programs into byte code that can be executed
 by the virtual machine.
 
-It's 80% there, but some finishing touches are still needed. See the TODO file
-for details about my future plans.
+See the TODO file for details about my future plans.
 
 ## Requirements
 

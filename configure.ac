@@ -7,5 +7,13 @@ AC_PROG_CC
 AC_PROG_LEX
 AC_PROG_YACC
 
-AC_CONFIG_FILES([Makefile as/Makefile vm/Makefile])
+AC_ARG_VAR([DIFF],[the 'diff' program to use for test output comparison])
+AC_PATH_PROG([DIFF],[diff],[])
+if test "x$DIFF" = "x"; then
+	AC_MSG_NOTICE([==> diff command not found!])
+	AC_MSG_NOTICE([==> Set DIFF variable if present in non-standard path!])
+	AC_MSG_NOTICE([diff is mandatory to run the tests])
+fi
+
+AC_CONFIG_FILES([Makefile as/Makefile vm/Makefile tests/Makefile])
 AC_OUTPUT
