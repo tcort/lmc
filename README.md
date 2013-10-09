@@ -12,9 +12,28 @@ See the TODO file for details about my future plans.
 
 ## Requirements
 
-* C compiler and standard build tools (make, shell, ...).
+* C compiler and standard build tools (make, sh, ...).
 * lex or flex
 * yacc or bison
+* NSIS (only for building the Windows installer).
+
+## Building
+
+Use the following commands to build, test, and install LMC.
+
+    ./configure
+    make
+    make check
+    make install
+
+## Cross Compiling (Target: Windows Installer)
+
+Use the follow commands to cross compile LMC and generate an installer
+suitable for Windows.
+
+    ./configure --host=i686-pc-mingw32
+    make
+    makensis lmc.nsi
 
 ## Contributing
 
