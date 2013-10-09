@@ -10,15 +10,17 @@ if test "x${DIFF}" = "x"; then
 	exit 77
 fi
 
-# Create an empty EXP file if there is no expected output.
-if [ ! -f ${EXP} ]; then
-	touch ${EXP}
-fi
 
 ${LMAS} -o ${BIN} ${ASM}
 ${LMVM} ${BIN} > ${OUT}
 
-${DIFF} -u ${EXP} ${OUT}
+if [ ! -f ${EXP} ]; then
+	# if no .exp file, then there is no expected output.
+	# check for an empty output file.
+	test 0 == $(wc -l ${OUT} | cut -d ' ' -f 1)
+else
+	${DIFF} -u ${EXP} ${OUT}
+fi
 
 RESULT=$?
 if [ $RESULT -gt 0 ]
