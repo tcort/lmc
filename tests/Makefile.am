@@ -1,4 +1,6 @@
-TESTS = 42.sh
+TESTS = \
+	42.sh	\
+	cob.sh
 
 TESTS_ENVIRONMENT = \
 	DIFF=$(DIFF)					\
@@ -11,6 +13,8 @@ TESTS_ENVIRONMENT = \
 
 CLEANFILES = \
 	42.bin	42.out
+	cob.bin cob.out
 
 EXTRA_DIST = test-runner.sh $(TESTS)	\
 	42.asm	42.exp
+	cob.asm	cob.exp

@@ -51,6 +51,7 @@ brp "BRP"
 inp "INP"
 out "OUT"
 hlt "HLT"
+cob "COB"
 dat "DAT"
 
 newline "\n"
@@ -109,6 +110,11 @@ comment {remark}.*{newline}
 		}
 
 {hlt} 		{
+			return HLT;
+		}
+
+{cob}		{
+			/* COB is a synonym for HLT */
 			return HLT;
 		}
 
