@@ -1,9 +1,4 @@
-Needed for 1.0:
  * Add test cases.
  * Write documentation.
- * Clean up assembler code.
-
-Future work:
- * allow larger programs. LMC definition limits programs to 100 lines.
- * more op codes (div, mul, etc).
- * Handle big endian vs. little endian.
+ * as: allow empty source lines.
+ * vm: add fallback for systems without mmap().

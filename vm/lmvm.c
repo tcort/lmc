@@ -16,6 +16,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <getopt.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -39,28 +40,76 @@
 #define OUT (IOP + 2)
 #define HLT 0
 
-static inline void check_addr(int32_t addr, off_t size) {
-	if (addr < 0 || addr > size) {
+/*
+ * Check the validity of the mailbox address.
+ * It must be between 0 and the smaller of size and MEMSIZE.
+ */
+static inline void check_addr(int16_t addr, off_t size) {
+	if (addr < 0 || addr >= size || addr >= MEMSIZE) {
 		fprintf(stderr, "Illegal address: %d\n", addr);
 		exit(1);
 	}
 }
 
+void print_version(void) {
+
+	fprintf(stdout, "%s %s\n", PACKAGE_NAME, PACKAGE_VERSION);
+
+	exit(0);
+}
+
+void print_help(char *progname) {
+
+	fprintf(stdout, "LMC - little man computer virtual machine.\n");
+	fprintf(stdout, "\n");
+	fprintf(stdout, "Usage: %s [OPTION] [filename]\n", progname);
+	fprintf(stdout, "\n");
+	fprintf(stdout, "Options:\n");
+	fprintf(stdout, " -h, -?            --help                  Print a helpful message and exit.\n");
+	fprintf(stdout, " -v                --version               Print version information and exit.\n");
+	fprintf(stdout, "\n");
+	fprintf(stdout, "Report bugs to <%s>.\n", PACKAGE_BUGREPORT);
+
+	exit(0);
+}
+
+
 int main(int argc, char *argv[]) {
 
-	uint32_t pc;
-	int32_t *memory;
-	int32_t inst, mbox, acc;
+	int optc;
+	const char* const short_options = "h?v";
+	static const struct option long_options[] = {
+		{"help", no_argument, NULL, 'h'},
+		{"version", no_argument, NULL, 'v'},
+		{NULL, 0, NULL, 0}
+	};
+
+	int16_t pc; /* program counter */
+	int16_t *memory; /* system memory (mailboxes) */
+	int16_t inst; /* current instruction */
+	int16_t mbox; /* current mailbox */
+	int acc; /* accumulator - must be int for fscanf() */
 
 	int fd, rc, done;
 	struct stat ss;
 
-	if (argc != 2) {
-		fprintf(stderr, "Usage: lmc [filename]\n");
-		exit(1);
+	while ((optc = getopt_long(argc, argv, short_options, long_options, NULL)) != -1) {
+		 switch (optc) {
+			case 'v':
+				print_version();
+				break;
+			case 'h':
+			case '?':
+				print_help(argv[0]);
+				break;
+		}
 	}
 
-	fd = open(argv[1], O_RDONLY);
+	if (optind + 1 != argc) {
+		print_help(argv[0]);
+	}
+
+	fd = open(argv[optind], O_RDONLY);
 	if (fd == -1) {
 		fprintf(stderr, "open(): %s\n", strerror(errno));
 		exit(1);
@@ -82,6 +131,7 @@ int main(int argc, char *argv[]) {
 	acc = 0;
 	done = 0;
 
+	/* Main Fetch-Decode-Execute Loop */
 	do {
 		check_addr(pc, ss.st_size);
 		inst = memory[pc];

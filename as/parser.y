@@ -47,12 +47,12 @@ extern int yylex();
 int yyerror(char* str);
 
 struct statement {
-	int32_t inst;
+	int16_t inst;
 	char *label;
 	struct statement *next;
 };
 
-struct statement *new_statement(int32_t inst, char *label) {
+struct statement *new_statement(int16_t inst, char *label) {
 
 	struct statement *stmt;
 
@@ -130,7 +130,7 @@ void label_insert(char *_label, int _lineno) {
 %union {
 	struct statement *stmt;
 	char *label;
-	int32_t number;
+	int number;
 };
 
 /* keywords */
@@ -172,7 +172,7 @@ program : lines
 					stmt->inst += label->lineno;
 				}
 
-				rc = write(fd, &stmt->inst, 4);
+				rc = write(fd, &stmt->inst, sizeof(stmt->inst));
 				if (rc == -1) {
 					fprintf(stderr, "write(): %s\n", strerror(errno));
 					exit(1);
