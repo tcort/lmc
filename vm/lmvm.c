@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "config.h"
+
 #include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
@@ -23,7 +25,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#ifdef HAVE_SYS_MMAN_H
 #include <sys/mman.h>
+#endif /* HAVE_SYS_MMAN_H */
+
 #include <sys/stat.h>
 
 #define MEMSIZE 100
@@ -121,11 +126,31 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
+#ifdef HAVE_MMAP
+
 	memory = mmap(NULL, ss.st_size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
 	if (memory == MAP_FAILED) {
 		fprintf(stderr, "mmap(): %s\n", strerror(errno));
 		exit(1);
 	}
+
+#else /* HAVE_MMAP */
+
+	/* if mmap() isn't present, just read the entire file into memory. */
+
+	memory = (int16_t *) malloc(ss.st_size);
+	if (memory == NULL) {
+		fprintf(stderr, "malloc(): %s\n", strerror(errno));
+		exit(1);
+	}
+
+	rc = read(fd, memory, ss.st_size);
+	if (rc == -1 || rc != ss.st_size) {
+		fprintf(stderr, "read(): %s\n", strerror(errno));
+		exit(1);
+	}
+
+#endif /* ! HAVE_MMAP */
 
 	pc = 0;
 	acc = 0;
@@ -188,11 +213,21 @@ int main(int argc, char *argv[]) {
 
 	} while (!done);
 
+#ifdef HAVE_MMAP
+
 	rc = munmap(memory, ss.st_size);
 	if (rc == -1) {
 		fprintf(stderr, "munmap(): %s\n", strerror(errno));
 		exit(1);
 	}
+	memory = NULL;
+
+#else /* HAVE_MMAP */
+
+	free(memory);
+	memory = NULL;
+
+#endif /* ! HAVE_MMAP */
 
 	rc = close(fd);
 	if (rc == -1) {

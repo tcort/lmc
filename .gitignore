@@ -24,4 +24,9 @@ test-driver
 *.bin
 *.out
 *.swp
+*.exe
+config.in
+config.in~
+config.h
+stamp-h1
 lmc-*.tar.gz

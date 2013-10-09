@@ -15,5 +15,11 @@ if test "x$DIFF" = "x"; then
 	AC_MSG_NOTICE([diff is mandatory to run the tests])
 fi
 
+AC_CHECK_HEADERS([sys/mman.h])
+
+AC_FUNC_MMAP
+
+AC_CONFIG_HEADERS([config.h:config.in])
+
 AC_CONFIG_FILES([Makefile as/Makefile vm/Makefile tests/Makefile])
 AC_OUTPUT

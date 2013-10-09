@@ -1,5 +1,4 @@
  * Add more test cases.
  * Write documentation.
  * as: allow empty source lines.
- * vm: add fallback for systems without mmap().
- * packaging for win32 (cross compile and nsis installer).
+ * packaging for win32 (NSIS installer)
