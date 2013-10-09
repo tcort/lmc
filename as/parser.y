@@ -41,6 +41,7 @@
 #define OUT_INST (IOP_INST + 2)
 #define HLT_INST 0
 
+extern char *output_filename;
 extern int lineno;
 extern int yylex();
 int yyerror(char* str);
@@ -151,7 +152,7 @@ program : lines
 			int fd, rc;
 			struct statement *stmt, *next_stmt;
 
-			fd = creat("a.out", S_IRWXU);
+			fd = creat(output_filename, S_IRWXU);
 			if (fd == -1) {
 				fprintf(stderr, "open(): %s\n", strerror(errno));
 				exit(1);

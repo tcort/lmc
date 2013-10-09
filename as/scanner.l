@@ -16,6 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <getopt.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -147,13 +148,62 @@ int yywrap() {
 }
 
 int lineno = 0;
+char *output_filename = "a.out";
+
+void print_version(void) {
+
+	fprintf(stdout, "%s %s\n", PACKAGE_NAME, PACKAGE_VERSION);
+	exit(0);
+}
+
+void print_help(char *progname) {
+
+	fprintf(stdout, "LMC - little man computer assembler.\n");
+	fprintf(stdout, "\n");
+	fprintf(stdout, "Usage: %s [OPTION] [filename]\n", progname);
+	fprintf(stdout, "\n");
+	fprintf(stdout, "Options:\n");
+	fprintf(stdout, " -o [filename]     --output [filename]     Specify the output filename.\n");
+	fprintf(stdout, " -h, -?            --help                  Print a helpful message and exit.\n");
+	fprintf(stdout, " -v                --version               Print version information and exit.\n");
+	fprintf(stdout, "\n");
+	fprintf(stdout, "Report bugs to <%s>.\n", PACKAGE_BUGREPORT);
+
+	exit(0);
+}
+
 int main(int argc, char *argv[]) {
 
-	if (argc != 2) {
-		fprintf(stderr, "Usage: lmas [filename]\n");
+	int optc;
+
+	const char* const short_options = "o:h?v";
+	static const struct option long_options[] = {
+		{"help", no_argument, NULL, 'h'},
+		{"version", no_argument, NULL, 'v'},
+		{"output", required_argument, NULL, 'o'},
+		{NULL, 0, NULL, 0}
+	};
+
+	while ((optc = getopt_long(argc, argv, short_options, long_options, NULL)) != -1) {
+		switch (optc) {
+			case 'o':
+				output_filename = optarg;
+				break;
+			case 'v':
+				print_version();
+				break;
+			case 'h':
+			case '?':
+				print_help(argv[0]);
+				break;
+		}
 	}
 
-	yyin = fopen(argv[1],"r");
+	if (optind + 1 != argc) {
+		print_help(argv[0]);
+	}
+
+	yyin = fopen(argv[optind], "r");
 	if (!yyin) {
 		perror(argv[1]);
 		exit(1);
