@@ -1,5 +1,5 @@
 TESTS = \
-	42.sh	\
+	42.sh \
 	cob.sh
 
 TESTS_ENVIRONMENT = \
@@ -16,5 +16,5 @@ CLEANFILES = \
 	cob.bin	cob.out
 
 EXTRA_DIST = test-runner.sh $(TESTS)	\
-	42.asm	42.exp
+	42.asm	42.exp			\
 	cob.asm
