@@ -1,7 +1,7 @@
 Needed for 1.0:
  * Clean up assembler code.
  * Write documentation.
- * Add test cases and setup Travis CI.
+ * Add test cases.
  * Allow user specified output files for the assembler.
  * Handle big endian vs. little endian.
 

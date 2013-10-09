@@ -1,0 +1,4 @@
+language: c
+complier: gcc
+before_script: autoreconf -i
+script: "./configure && make && make distcheck"
