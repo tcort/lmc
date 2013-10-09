@@ -17,7 +17,7 @@ ${LMVM} ${BIN} > ${OUT}
 if [ ! -f ${EXP} ]; then
 	# if no .exp file, then there is no expected output.
 	# check for an empty output file.
-	test 0 == $(wc -l ${OUT} | cut -d ' ' -f 1)
+	test 0 -eq $(wc -l ${OUT} | cut -d ' ' -f 1)
 else
 	${DIFF} -u ${EXP} ${OUT}
 fi
