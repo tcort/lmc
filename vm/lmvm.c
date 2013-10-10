@@ -78,6 +78,22 @@ void print_help(char *progname) {
 	exit(0);
 }
 
+/*
+ * Determine if the session is interactive (i.e. user at a tty) or if
+ * we're reading from a file or pipe. This is used to determine if a
+ * prompt should be displayed.
+ */
+int is_interfactive(FILE *f) {
+
+	int fd;
+
+	fd = fileno(f);
+	if (fd == -1) {
+		return 0;
+	}
+
+	return isatty(fd);
+}
 
 int main(int argc, char *argv[]) {
 
@@ -189,8 +205,11 @@ int main(int argc, char *argv[]) {
 				break;
 			case IOP:
 				if (inst == INP) {
-					fprintf(stdout, "Please enter a number: ");
-					fflush(stdout);
+					if (is_interfactive(stdin)) {
+						fprintf(stdout, "Please enter a number: ");
+						fflush(stdout);
+					}
+
 					rc = fscanf(stdin, "%d", &acc);
 					if (rc == EOF) {
 						fprintf(stderr, "EOF\n");
