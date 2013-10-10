@@ -227,6 +227,6 @@ data	: DAT NUMBER { $$ = $2; }
 %%
 
 int yyerror(char* str) {
-	fprintf(stderr,"yyerror: %s (line %d)\n", str, lineno);
+	fprintf(stderr,"yyerror: %s (line %d)\n", str, lineno + 1);
 	exit(1);
 }
