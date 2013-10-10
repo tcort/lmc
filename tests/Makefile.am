@@ -2,7 +2,8 @@ TESTS = \
 	42.sh		\
 	cob.sh		\
 	countdown.sh	\
-	io.sh
+	io.sh		\
+	sub.sh
 
 TESTS_ENVIRONMENT = \
 	WINE=$(WINE)					\
@@ -18,10 +19,12 @@ CLEANFILES = \
 	42.bin		42.out		\
 	cob.bin		cob.out		\
 	countdown.bin	countdown.out	\
-	io.bin		io.out
+	io.bin		io.out		\
+	sub.bin		sub.out
 
 EXTRA_DIST = test-runner.sh $(TESTS)		\
 	42.asm		42.exp			\
 	cob.asm					\
 	countdown.asm	countdown.exp		\
-	io.asm		io.exp		io.in
+	io.asm		io.exp		io.in	\
+	sub.asm		sub.exp		sub.in
