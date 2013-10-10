@@ -1,4 +1,7 @@
 language: c
 complier: gcc
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq nsis mingw32 wine
 before_script: autoreconf -i
-script: "./configure && make distcheck"
+script: "./configure && make && make check && make distcheck && make distclean && ./configure --host=i586-mingw32msvc && make && make check && makensis lmc.nsi"

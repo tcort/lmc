@@ -3,6 +3,7 @@ TESTS = \
 	cob.sh
 
 TESTS_ENVIRONMENT = \
+	WINE=$(WINE)					\
 	DIFF=$(DIFF)					\
 	LMAS=$(top_builddir)/as/lmas			\
 	LMVM=$(top_builddir)/vm/lmvm			\

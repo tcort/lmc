@@ -11,8 +11,8 @@ if test "x${DIFF}" = "x"; then
 fi
 
 
-${LMAS} -o ${BIN} ${ASM}
-${LMVM} ${BIN} > ${OUT}
+${WINE} ${LMAS} -o ${BIN} ${ASM}
+${WINE} ${LMVM} ${BIN} | sed -e 's/\r$//' > ${OUT}
 
 if [ ! -f ${EXP} ]; then
 	# if no .exp file, then there is no expected output.

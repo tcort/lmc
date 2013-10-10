@@ -15,6 +15,23 @@ if test "x$DIFF" = "x"; then
 	AC_MSG_NOTICE([diff is mandatory to run the tests])
 fi
 
+if test $cross_compiling = yes; then
+	case "$host" in
+		*-*-mingw* | *-*-cygwin)
+			dnl
+			dnl Check for wine
+			dnl
+			AC_ARG_VAR([WINE],[the 'wine' program for running mingw/cygwin executables.])
+			AC_PATH_PROG([WINE],['wine'],[])
+			if test "x$WINE" = "x"; then
+				AC_MSG_NOTICE([==> wine command not found! see http://www.winehq.org/])
+				AC_MSG_NOTICE([==> Set WINE variable if present in non-standard path!])
+				AC_MSG_NOTICE([Tests will probably not work without wine.])
+			fi
+		;;
+	esac
+fi
+
 AC_CHECK_HEADERS([sys/mman.h])
 
 AC_FUNC_MMAP
