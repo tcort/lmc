@@ -1,5 +1,6 @@
 TESTS = \
 	42.sh		\
+	basic-io.sh	\
 	cob.sh		\
 	countdown.sh	\
 	io.sh		\
@@ -17,14 +18,16 @@ TESTS_ENVIRONMENT = \
 
 CLEANFILES = \
 	42.bin		42.out		\
+	basic-io.bin	basic-io.out	\
 	cob.bin		cob.out		\
 	countdown.bin	countdown.out	\
 	io.bin		io.out		\
 	sub.bin		sub.out
 
-EXTRA_DIST = test-runner.sh $(TESTS)		\
-	42.asm		42.exp			\
-	cob.asm					\
-	countdown.asm	countdown.exp		\
-	io.asm		io.exp		io.in	\
+EXTRA_DIST = test-runner.sh $(TESTS)			\
+	42.asm		42.exp				\
+	basic-io.asm	basic-io.exp	basic-io.in	\
+	cob.asm						\
+	countdown.asm	countdown.exp			\
+	io.asm		io.exp		io.in		\
 	sub.asm		sub.exp		sub.in
