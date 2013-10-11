@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	rc = read(fd, memory, ss.st_size);
-	if (rc == -1 || rc != ss.st_size) {
+	if (rc != ss.st_size) {
 		fprintf(stderr, "read(): %s\n", strerror(errno));
 		exit(1);
 	}

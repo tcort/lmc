@@ -148,12 +148,13 @@ void label_insert(char *_label, int _lineno) {
 
 program : lines
 		{
-			int fd, rc;
+			int rc;
+			FILE *fp;
 			struct statement *stmt, *next_stmt;
 
-			fd = creat(output_filename, S_IRWXU);
-			if (fd == -1) {
-				fprintf(stderr, "open(): %s\n", strerror(errno));
+			fp = fopen(output_filename, "wb");
+			if (fp == NULL) {
+				fprintf(stderr, "fopen(): %s\n", strerror(errno));
 				exit(1);
 			}
 
@@ -171,9 +172,9 @@ program : lines
 					stmt->inst += label->lineno;
 				}
 
-				rc = write(fd, &stmt->inst, sizeof(stmt->inst));
-				if (rc == -1) {
-					fprintf(stderr, "write(): %s\n", strerror(errno));
+				rc = fwrite(&stmt->inst, sizeof(stmt->inst), 1, fp);
+				if (rc != 1) {
+					fprintf(stderr, "fwrite(): %s\n", strerror(errno));
 					exit(1);
 				}
 
@@ -183,7 +184,11 @@ program : lines
 
 			}
 
-			close(fd);
+			rc = fclose(fp);
+			if (rc == -1) {
+				fprintf(stderr, "fclose(): %s\n", strerror(errno));
+				exit(1);
+			}
 
 			struct label *cur, *next_label;
 
