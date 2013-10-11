@@ -63,8 +63,10 @@ space " "
 eol ({newline}|{carriagereturn}{newline})
 empty ({tab}|{space}|{carriagereturn}|{eol})
 
-remark "//"
-comment {remark}.*{newline}
+doubleslash "//"
+hash "#"
+semicolon ";"
+comment ({doubleslash}|{hash}|{semicolon}).*{newline}
 
 %option noinput
 %option nounput
