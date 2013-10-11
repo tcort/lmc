@@ -25,7 +25,7 @@ fi
 if [ ! -f ${EXP} ]; then
 	# if no .exp file, then there is no expected output.
 	# check for an empty output file.
-	expr 0 == $(wc -l ${OUT} | cut -d ' ' -f 1)
+	expr 0 = $(wc -l ${OUT} | awk '{print $1}')
 else
 	${DIFF} -u ${EXP} ${OUT}
 fi
