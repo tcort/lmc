@@ -16,6 +16,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*
+ * Simple scanner. Defines the regular expressions for tokenizing the
+ * input source. The main() function is also defined here.
+ */
+
 #include "config.h"
 
 #include <getopt.h>
@@ -160,12 +165,20 @@ int yywrap() {
 int lineno = 0;
 char *output_filename = "a.out";
 
+/**
+ * Print the package name and version number, then exit().
+ */
 void print_version(void) {
 
 	fprintf(stdout, "%s %s\n", PACKAGE_NAME, PACKAGE_VERSION);
 	exit(0);
 }
 
+/**
+ * Prints the usage information and available command line options, then exit().
+ *
+ * @param progname the name of the program
+ */
 void print_help(char *progname) {
 
 	fprintf(stdout, "LMC - little man computer assembler.\n");
@@ -182,6 +195,13 @@ void print_help(char *progname) {
 	exit(0);
 }
 
+/**
+ * Main driver program.
+ *
+ * @param argc number of command line arguments.
+ * @param argv the command
+ * @return exit code
+ */
 int main(int argc, char *argv[]) {
 
 	int optc;

@@ -82,8 +82,11 @@ void print_help(char *progname) {
  * Determine if the session is interactive (i.e. user at a tty) or if
  * we're reading from a file or pipe. This is used to determine if a
  * prompt should be displayed.
+ *
+ * @param f input stream.
+ * @return 1 if session is interactive or 0 if not.
  */
-int is_interfactive(FILE *f) {
+int is_interactive(FILE *f) {
 
 	int fd;
 
@@ -95,6 +98,16 @@ int is_interfactive(FILE *f) {
 	return isatty(fd);
 }
 
+/**
+ * Main Program
+ *
+ * TODO re-factor
+ * Everything in one function probably won't win any design awards.
+ *
+ * @param argc number of command line arguments.
+ * @param argv the command line arguments.
+ * @return exit code
+ */
 int main(int argc, char *argv[]) {
 
 	int optc;
@@ -205,7 +218,7 @@ int main(int argc, char *argv[]) {
 				break;
 			case IOP:
 				if (inst == INP) {
-					if (is_interfactive(stdin)) {
+					if (is_interactive(stdin)) {
 						fprintf(stdout, "Please enter a number: ");
 						fflush(stdout);
 					}

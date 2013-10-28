@@ -16,6 +16,17 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+
+/*
+ * Simple 2 pass assembler.
+ *
+ * This file handles the parsing of the assembly language code and the
+ * emitting of virtual machine code. As the code is parsed, a list of
+ * statements (abstract syntax tree) is constructed in memory and a
+ * symbol table is created. When parsing is complete, the program iterates
+ * over the statement list generating machine code and outputting it to a file.
+ */
+
 #define _BSD_SOURCE
 #include <errno.h>
 #include <fcntl.h>
@@ -40,17 +51,32 @@
 #define OUT_INST (IOP_INST + 2)
 #define HLT_INST 0
 
+/* Globals */
 extern char *output_filename;
 extern int lineno;
 extern int yylex();
+
+/* Prototypes */
 int yyerror(char* str);
 
+/**
+ * Item in a linked list representing an assembly language program.
+ * It is our abstract syntax tree.
+ */
 struct statement {
 	int16_t inst;
 	char *label;
 	struct statement *next;
 };
 
+/**
+ * Allocate a statement on the heap and initialize the inst and label
+ * fields with the given parameters.
+ *
+ * @param inst the instruction code (without target address).
+ * @param label if this instruction has a target label, pass it here.
+ * @return a new statement or NULL.
+ */
 struct statement *new_statement(int16_t inst, char *label) {
 
 	struct statement *stmt;
@@ -68,12 +94,20 @@ struct statement *new_statement(int16_t inst, char *label) {
 	return stmt;
 }
 
+/**
+ * Add a statement to the end of the list.
+ */
 void statement_append(struct statement *list, struct statement *stmt) {
 
 	struct statement *cur;
 
 	cur = list;
 
+	/* TODO re-factor
+	 * it isn't very efficient to walk the list for each insertion.
+	 * instead we should maintain a pointer to the last element.
+	 * not a big deal since LMC programs are <= 100 lines long.
+	 */
 	while (cur && cur->next) {
 		cur = cur->next;
 	}
@@ -81,17 +115,29 @@ void statement_append(struct statement *list, struct statement *stmt) {
 	cur->next = stmt;
 }
 
+/**
+ * Label is a linked list of line numbers and strings. It is our symbol table.
+ */
 struct label {
 	int lineno;
 	char *label;
 	struct label *next;
 };
 
+/**
+ * Symbol Table
+ */
 struct label *label_head = NULL;
 
 struct label * label_lookup(char *_label) {
 
 	struct label *cur;
+
+	/* TODO re-factor
+	 * it isn't very efficient to do a linear search for every symbol.
+	 * instead we should use a hash table or other ADT with O(1) get().
+	 * not a big deal since LMC programs are <= 100 lines long.
+	 */
 	
 	for (cur = label_head; cur != NULL; cur = cur->next) {
 		if (strncmp(cur->label, _label, strlen(_label)) == 0) {
@@ -102,6 +148,12 @@ struct label * label_lookup(char *_label) {
 	return NULL;
 }
 
+/**
+ * Add a label with it's line number to the symbol table.
+ *
+ * @param _label the label.
+ * @param _lineno the line that the label resides on.
+ */
 void label_insert(char *_label, int _lineno) {
 	struct label *cur;
 
@@ -111,6 +163,10 @@ void label_insert(char *_label, int _lineno) {
 		exit(1);
 	}
 
+	/* TODO refactor
+	 * adding a label to the list should be a separate function from
+	 * creating a new label.
+	 */
 	cur = (struct label *) malloc(sizeof(struct label));
 	if (cur == NULL) {
 		fprintf(stderr, "malloc: %s\n", strerror(errno));
@@ -152,14 +208,17 @@ program : lines
 			FILE *fp;
 			struct statement *stmt, *next_stmt;
 
+			/* open output file */
 			fp = fopen(output_filename, "wb");
 			if (fp == NULL) {
 				fprintf(stderr, "fopen(): %s\n", strerror(errno));
 				exit(1);
 			}
 
+			/* iterate over the list of statements */
 			for (stmt = $1; stmt != NULL; stmt = next_stmt) {
 
+				/* look up label if needed, decorate AST */
 				if (stmt->label) {
 					struct label *label;
 					label = label_lookup(stmt->label);
@@ -172,23 +231,28 @@ program : lines
 					stmt->inst += label->lineno;
 				}
 
+				/* emit machine code */
 				rc = fwrite(&stmt->inst, sizeof(stmt->inst), 1, fp);
 				if (rc != 1) {
 					fprintf(stderr, "fwrite(): %s\n", strerror(errno));
 					exit(1);
 				}
 
+				/* clean up */
 				if (stmt->label) free(stmt->label);
 				next_stmt = stmt->next;
 				free(stmt);
 
 			}
 
+			/* close output file */
 			rc = fclose(fp);
 			if (rc == -1) {
 				fprintf(stderr, "fclose(): %s\n", strerror(errno));
 				exit(1);
 			}
+
+			/* free symbol table */
 
 			struct label *cur, *next_label;
 
@@ -231,7 +295,14 @@ data	: DAT NUMBER { $$ = $2; }
 
 %%
 
+/**
+ * A parse error occurred, print an error message and exit().
+ *
+ * @param error message.
+ * @return should not return, but if it does a -1 will be returned.
+ */
 int yyerror(char* str) {
 	fprintf(stderr,"yyerror: %s (line %d)\n", str, lineno + 1);
 	exit(1);
+	return -1; /* should not get here */
 }
