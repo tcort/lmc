@@ -16,7 +16,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
 /*
  * Simple 2 pass assembler.
  *
@@ -80,7 +79,7 @@ struct statement {
  * @param label if this instruction has a target label, pass it here.
  * @return a new statement or NULL.
  */
-struct statement *new_statement(int16_t inst, char *label) {
+struct statement *statement_new(int16_t inst, char *label) {
 
 	struct statement *stmt;
 
@@ -98,25 +97,10 @@ struct statement *new_statement(int16_t inst, char *label) {
 }
 
 /**
- * Add a statement to the end of the list.
+ * Pointer to the last line of the program.
+ * Used for O(1) insertion into AST.
  */
-void statement_append(struct statement *list, struct statement *stmt) {
-
-	struct statement *cur;
-
-	cur = list;
-
-	/* TODO re-factor
-	 * it isn't very efficient to walk the list for each insertion.
-	 * instead we should maintain a pointer to the last element.
-	 * not a big deal since LMC programs are <= 100 lines long.
-	 */
-	while (cur && cur->next) {
-		cur = cur->next;
-	}
-
-	cur->next = stmt;
-}
+struct statement *stmt_tail = NULL;
 
 %}
  
@@ -192,29 +176,25 @@ program : lines
 		}
 	;
 
-lines	: lines line { statement_append($1, $2); }
-	| line { $$ = $1; }
+lines	: lines line { $$ = $1; stmt_tail->next = $2; stmt_tail = $2; }
+	| line { $$ = $1; stmt_tail = $1; }
 	;
 
-line	:	LABEL statement EOL
-		{
-			hash_put(symtab, $1, lineno - 1);
-			$$ = $2;
-		}
+line	:	LABEL statement EOL { hash_put(symtab, $1, lineno - 1); $$ = $2; }
 	|	statement EOL { $$ = $1; }
 	;
 
-statement	:	ADD LABEL { $$ = new_statement(ADD_INST, $2); }
-		|	SUB LABEL { $$ = new_statement(SUB_INST, $2); }
-		|	STA LABEL { $$ = new_statement(STA_INST, $2); }
-		|	LDA LABEL { $$ = new_statement(LDA_INST, $2); }
-		|	BRA LABEL { $$ = new_statement(BRA_INST, $2); }
-		|	BRZ LABEL { $$ = new_statement(BRZ_INST, $2); }
-		|	BRP LABEL { $$ = new_statement(BRP_INST, $2); }
-		|	INP { $$ = new_statement(INP_INST, NULL); }
-		|	OUT { $$ = new_statement(OUT_INST, NULL); }
-		|	HLT { $$ = new_statement(HLT_INST, NULL); }
-		|	data { $$ = new_statement($1, NULL); }
+statement	:	ADD LABEL { $$ = statement_new(ADD_INST, $2); }
+		|	SUB LABEL { $$ = statement_new(SUB_INST, $2); }
+		|	STA LABEL { $$ = statement_new(STA_INST, $2); }
+		|	LDA LABEL { $$ = statement_new(LDA_INST, $2); }
+		|	BRA LABEL { $$ = statement_new(BRA_INST, $2); }
+		|	BRZ LABEL { $$ = statement_new(BRZ_INST, $2); }
+		|	BRP LABEL { $$ = statement_new(BRP_INST, $2); }
+		|	INP { $$ = statement_new(INP_INST, NULL); }
+		|	OUT { $$ = statement_new(OUT_INST, NULL); }
+		|	HLT { $$ = statement_new(HLT_INST, NULL); }
+		|	data { $$ = statement_new($1, NULL); }
 		;
 
 data	: DAT NUMBER { $$ = $2; }
