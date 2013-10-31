@@ -5,6 +5,7 @@ TESTS = \
 	cob.sh		\
 	countdown.sh	\
 	io.sh		\
+	labels.sh	\
 	load-store.sh	\
 	sub.sh
 
@@ -25,6 +26,7 @@ CLEANFILES = \
 	cob.bin		cob.out		\
 	countdown.bin	countdown.out	\
 	io.bin		io.out		\
+	labels.bin	labels.out	\
 	load-store.bin	load-store.out	\
 	sub.bin		sub.out
 
@@ -35,5 +37,6 @@ EXTRA_DIST = test-runner.sh $(TESTS)			\
 	cob.asm						\
 	countdown.asm	countdown.exp			\
 	io.asm		io.exp		io.in		\
+	labels.asm	labels.exp			\
 	load-store.asm	load-store.exp	load-store.in	\
 	sub.asm		sub.exp		sub.in

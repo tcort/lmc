@@ -38,6 +38,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "hash.h"
+
 #define MEMSIZE 100
 #define ADD_INST (1 * MEMSIZE)
 #define SUB_INST (2 * MEMSIZE)
@@ -52,6 +54,7 @@
 #define HLT_INST 0
 
 /* Globals */
+extern hash_t *symtab;
 extern char *output_filename;
 extern int lineno;
 extern int yylex();
@@ -115,71 +118,6 @@ void statement_append(struct statement *list, struct statement *stmt) {
 	cur->next = stmt;
 }
 
-/**
- * Label is a linked list of line numbers and strings. It is our symbol table.
- */
-struct label {
-	int lineno;
-	char *label;
-	struct label *next;
-};
-
-/**
- * Symbol Table
- */
-struct label *label_head = NULL;
-
-struct label * label_lookup(char *_label) {
-
-	struct label *cur;
-
-	/* TODO re-factor
-	 * it isn't very efficient to do a linear search for every symbol.
-	 * instead we should use a hash table or other ADT with O(1) get().
-	 * not a big deal since LMC programs are <= 100 lines long.
-	 */
-	
-	for (cur = label_head; cur != NULL; cur = cur->next) {
-		if (strncmp(cur->label, _label, strlen(_label)) == 0) {
-			return cur;
-		}
-	}
-
-	return NULL;
-}
-
-/**
- * Add a label with it's line number to the symbol table.
- *
- * @param _label the label.
- * @param _lineno the line that the label resides on.
- */
-void label_insert(char *_label, int _lineno) {
-	struct label *cur;
-
-	cur = label_lookup(_label);
-	if (cur != NULL) {
-		fprintf(stderr, "Duplicate label '%s'\n", _label);
-		exit(1);
-	}
-
-	/* TODO refactor
-	 * adding a label to the list should be a separate function from
-	 * creating a new label.
-	 */
-	cur = (struct label *) malloc(sizeof(struct label));
-	if (cur == NULL) {
-		fprintf(stderr, "malloc: %s\n", strerror(errno));
-		exit(1);
-	}
-
-	cur->label = _label;
-	cur->lineno = _lineno;
-	cur->next = label_head;
-	
-	label_head = cur;
-}
-
 %}
  
 %union {
@@ -220,15 +158,15 @@ program : lines
 
 				/* look up label if needed, decorate AST */
 				if (stmt->label) {
-					struct label *label;
-					label = label_lookup(stmt->label);
+					int sym_lineno;
+					sym_lineno = hash_get(symtab, stmt->label);
 
-					if (label == NULL) {
+					if (sym_lineno == -1) {
 						fprintf(stderr, "Undefined label '%s'\n", stmt->label);
 						exit(1);
 					}
 
-					stmt->inst += label->lineno;
+					stmt->inst += sym_lineno;
 				}
 
 				/* emit machine code */
@@ -251,16 +189,6 @@ program : lines
 				fprintf(stderr, "fclose(): %s\n", strerror(errno));
 				exit(1);
 			}
-
-			/* free symbol table */
-
-			struct label *cur, *next_label;
-
-			for (cur = label_head; cur != NULL; cur = next_label) {
-				free(cur->label);
-				next_label = cur->next;
-				free(cur);
-			}
 		}
 	;
 
@@ -270,7 +198,7 @@ lines	: lines line { statement_append($1, $2); }
 
 line	:	LABEL statement EOL
 		{
-			label_insert($1, lineno - 1);
+			hash_put(symtab, $1, lineno - 1);
 			$$ = $2;
 		}
 	|	statement EOL { $$ = $1; }

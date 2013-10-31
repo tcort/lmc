@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "hash.h"
 #include "parser.h"
 
 extern int lineno;
@@ -164,6 +165,7 @@ int yywrap() {
 
 int lineno = 0;
 char *output_filename = "a.out";
+hash_t *symtab;
 
 /**
  * Print the package name and version number, then exit().
@@ -233,6 +235,7 @@ int main(int argc, char *argv[]) {
 		print_help(argv[0]);
 	}
 
+	symtab = hash_new();
 	yyin = fopen(argv[optind], "r");
 	if (!yyin) {
 		perror(argv[1]);
@@ -240,6 +243,8 @@ int main(int argc, char *argv[]) {
 	}
 	yyparse();
 	fclose(yyin);
+	hash_free(symtab);
+	symtab = NULL;
 
 	return 0;
 }

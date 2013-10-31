@@ -12,6 +12,7 @@ Makefile.in
 lmvm
 lmvm.o
 lmas
+hash.o
 scanner.c
 scanner.o
 parser.c
