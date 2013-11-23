@@ -1,5 +1,5 @@
 Name "Little Man Computer"
-OutFile "lmc-1.0.0-installer.exe"
+OutFile "lmc-1.0-installer.exe"
 InstallDir $PROGRAMFILES\lmc
 DirText "This will install the Little Man Computer virtual machine and assembler on your computer. Choose a directory..."
 
