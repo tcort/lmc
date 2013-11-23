@@ -1,5 +1,5 @@
 AC_PREREQ(2.59)
-AC_INIT([lmc], [1.0.0-SNAPSHOT], [linuxgeek@gmail.com])
+AC_INIT([lmc], [1.0], [linuxgeek@gmail.com])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AM_SILENT_RULES([yes])
 
@@ -38,5 +38,5 @@ AC_FUNC_MMAP
 
 AC_CONFIG_HEADERS([config.h:config.in])
 
-AC_CONFIG_FILES([Makefile as/Makefile vm/Makefile tests/Makefile])
+AC_CONFIG_FILES([Makefile as/Makefile vm/Makefile tests/Makefile man/Makefile])
 AC_OUTPUT
