@@ -76,7 +76,7 @@ int hash_get(hash_t *h, char *label) {
 	hash_entry_t *entry;
 
 	if (h == NULL) {
-		return;
+		return -1;
 	}
 	
 	hash = hashf(label);
