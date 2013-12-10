@@ -20,6 +20,7 @@ parser.h
 parser.o
 ylwrap
 test-driver
+*.plist
 *.log
 *.trs
 *.bin
