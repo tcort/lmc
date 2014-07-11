@@ -10,7 +10,7 @@ by the virtual machine.
 
 ## Requirements
 
-* C compiler and standard build tools (make, sh, ...).
+* C compiler and standard build tools (make, sh, autoconf/automake, ...).
 * lex or flex
 * yacc or bison
 
@@ -18,6 +18,7 @@ by the virtual machine.
 
 Use the following commands to build, test, and install LMC.
 
+    sh autogen
     ./configure
     make
     make check
@@ -29,13 +30,14 @@ Use the following commands to build, test, and install LMC.
 * lex or flex
 * yacc or bison
 * nsis (for generating an installer)
-* wine (for running test suite)
+* wine (for running the test suite)
 
 ## Cross Compiling (Target: mingw32)
 
 Use the follow commands to cross compile LMC, run the test suite under wine,
 and generate an installer exe:
 
+    sh autogen
     ./configure --host=i586-mingw32msvc
     make
     make check
