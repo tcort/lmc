@@ -239,6 +239,8 @@ int main(int argc, char *argv[]) {
 	yyin = fopen(argv[optind], "r");
 	if (!yyin) {
 		perror(argv[optind]);
+		hash_free(symtab);
+		symtab = NULL;
 		exit(1);
 	}
 	yyparse();
