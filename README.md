@@ -18,7 +18,6 @@ by the virtual machine.
 
 Use the following commands to build, test, and install LMC.
 
-    sh autogen
     ./configure
     make
     make check
@@ -37,7 +36,6 @@ Use the following commands to build, test, and install LMC.
 Use the follow commands to cross compile LMC, run the test suite under wine,
 and generate an installer exe:
 
-    sh autogen
     ./configure --host=i586-mingw32msvc
     make
     make check
