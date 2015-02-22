@@ -1,5 +1,5 @@
 AC_PREREQ(2.59)
-AC_INIT([lmc], [2.0], [linuxgeek@gmail.com])
+AC_INIT([lmc], [2.0.1], [linuxgeek@gmail.com])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AM_SILENT_RULES([yes])
 
