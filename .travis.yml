@@ -4,3 +4,4 @@ complier:
   - clang
 before_script: autoreconf -i
 script: "./configure && make distcheck"
+sudo: false
