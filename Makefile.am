@@ -1,2 +1,2 @@
-EXTRA_DIST = README.md
+EXTRA_DIST = README.md CONTRIBUTING.md
 SUBDIRS = as vm tests man
