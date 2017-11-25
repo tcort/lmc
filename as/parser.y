@@ -26,7 +26,6 @@
  * over the statement list generating machine code and outputting it to a file.
  */
 
-#define _BSD_SOURCE
 #include <errno.h>
 #include <fcntl.h>
 #include <stdint.h>
